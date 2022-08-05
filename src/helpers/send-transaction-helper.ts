@@ -1,4 +1,4 @@
-import { post } from 'request-promise';
+import axios from 'axios';
 import type { Biconomy } from '..';
 import { BICONOMY_RESPONSE_CODES, config } from '../config';
 import { logErrorMessage, logMessage } from '../utils';
@@ -36,9 +36,17 @@ export async function sendTransaction(
     logMessage('request body');
     logMessage(JSON.stringify(data));
 
-    const response = await post(options);
+    const response = await axios.post(`${config.metaEntryPointBaseUrl}/api/v1/native`, data, {
+      headers: {
+        'x-api-key': this.apiKey,
+        'Content-Type': 'application/json;charset=utf-8',
+        version: config.PACKAGE_VERSION,
+      }
+    })
     logMessage(response);
-    const result = JSON.parse(response);
+    const result = response.data;
+
+    console.log('result -> ', result);
 
     if (
       result.data

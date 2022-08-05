@@ -8,9 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendTransaction = void 0;
-const request_promise_1 = require("request-promise");
+const axios_1 = __importDefault(require("axios"));
 const config_1 = require("../config");
 const utils_1 = require("../utils");
 const client_messaging_helper_1 = require("./client-messaging-helper");
@@ -39,9 +42,15 @@ function sendTransaction(account, data, fallback) {
             };
             (0, utils_1.logMessage)('request body');
             (0, utils_1.logMessage)(JSON.stringify(data));
-            const response = yield (0, request_promise_1.post)(options);
+            const response = yield axios_1.default.post(`${config_1.config.metaEntryPointBaseUrl}/api/v1/native`, data, {
+                headers: {
+                    'x-api-key': this.apiKey,
+                    'Content-Type': 'application/json;charset=utf-8',
+                    version: config_1.config.PACKAGE_VERSION,
+                }
+            });
             (0, utils_1.logMessage)(response);
-            const result = JSON.parse(response);
+            const result = JSON.parse(response.data);
             if (result.data
                 && result.data.transactionId
                 && result.flag === config_1.BICONOMY_RESPONSE_CODES.SUCCESS) {
