@@ -48,7 +48,7 @@ export async function sendTransaction(
       }
     );
     logMessage(response);
-    const { result } = response.data;
+    const result = response.data;
 
     console.log("result -> ", result);
 
